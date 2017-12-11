@@ -254,7 +254,20 @@ import UIKit
 			segmentedScrollView.sjShowsHorizontalScrollIndicator = showsHorizontalScrollIndicator
 		}
 	}
-
+    
+    /**
+     *  Disable horizontal scroll on contentView.
+     *
+     *  By default false.
+     *
+     *  segmentedScrollView.disableHorizontalScrollOnContentView = true
+     */
+    open var disableHorizontalScrollOnContentView: Bool = false {
+        didSet {
+            segmentedScrollView.sjDisableHorizontalScrollOnContentView = disableHorizontalScrollOnContentView
+        }
+    }
+    
     open weak var delegate:SJSegmentedViewControllerDelegate?
     var viewObservers = [UIView]()
     var segmentedScrollView = SJSegmentedScrollView(frame: CGRect.zero)

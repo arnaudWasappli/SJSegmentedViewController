@@ -31,7 +31,9 @@ class SJContentView: UIScrollView {
     var contentSubViewWidthConstraints = [NSLayoutConstraint]()
     let animationDuration = 0.3
     var didSelectSegmentAtIndex: DidSelectSegmentAtIndex?
-
+    var disableHorizontalScroll: Bool = false
+    fileprivate var initialOffset: CGPoint = .zero
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -142,11 +144,27 @@ class SJContentView: UIScrollView {
 }
 
 extension SJContentView: UIScrollViewDelegate {
-    
+
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard !disableHorizontalScroll else { return }
+        
         pageIndex = Int(contentOffset.x / bounds.size.width)
         didSelectSegmentAtIndex?(nil, pageIndex, true)
         NotificationCenter.default.post(name: Notification.Name(rawValue: "DidChangeSegmentIndex"),
-                                                                  object: pageIndex)
+                                        object: pageIndex)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if isDragging, disableHorizontalScroll {
+            var offset = contentOffset
+            offset.x = initialOffset.x
+            setContentOffset(offset, animated: false)
+        }
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        if disableHorizontalScroll {
+            initialOffset = contentOffset
+        }
     }
 }
